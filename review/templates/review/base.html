@@ -1,0 +1,24 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}second-read{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'review/style.css' %}">
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="{% url 'studies' %}">second-read</a>
+    {% if user.is_authenticated %}
+      <nav>
+        <a href="{% url 'studies' %}">Studies</a>
+        {% if is_reviewer %}<a href="{% url 'review-queue' %}">Review queue</a>{% endif %}
+        <span class="who">{{ user.username }}{% if is_reviewer %} · reviewer{% endif %}{% if is_annotator %} · annotator{% endif %}</span>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link">Sign out</button></form>
+      </nav>
+    {% endif %}
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

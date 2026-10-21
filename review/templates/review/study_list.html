@@ -1,0 +1,20 @@
+{% extends "review/base.html" %}
+{% block content %}
+<h1>Studies</h1>
+<table>
+  <thead><tr><th>Title</th><th>Modality</th><th>Subject ref</th><th>Images</th><th>Created</th></tr></thead>
+  <tbody>
+  {% for s in studies %}
+    <tr>
+      <td><a href="{% url 'study' s.pk %}">{{ s.title }}</a></td>
+      <td>{{ s.get_modality_display }}</td>
+      <td><code>{{ s.subject_ref }}</code></td>
+      <td>{{ s.images.count }}</td>
+      <td>{{ s.created_at|date:"Y-m-d" }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5">No studies yet. Run <code>python manage.py seed_demo</code> or create one through the API.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

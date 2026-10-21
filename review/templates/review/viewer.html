@@ -1,0 +1,55 @@
+{% extends "review/base.html" %}
+{% load static %}
+{% block content %}
+<div class="viewer"
+     id="viewer"
+     data-mode="{{ mode }}"
+     data-image="{{ image.pk }}"
+     data-width="{{ image.width }}"
+     data-height="{{ image.height }}"
+     data-src="{{ image.file.url }}"
+     {% if task %}data-task="{{ task.pk }}"{% endif %}>
+  <div class="stage"><canvas id="canvas"></canvas></div>
+  <aside>
+    {% if mode == "annotate" %}
+      <h2>Your reading</h2>
+      <p class="muted">Image #{{ image.pk }}. Other readers' work is hidden until review.</p>
+      <p>Status: <strong id="status">…</strong></p>
+      <div class="tools">
+        <label>Label
+          <select id="label">
+            {% for l in labels %}<option value="{{ l.name }}" data-color="{{ l.color }}">{{ l.name }}</option>{% endfor %}
+          </select>
+        </label>
+        <div class="seg">
+          <button type="button" data-tool="box" class="active">Box</button>
+          <button type="button" data-tool="polygon">Polygon</button>
+        </div>
+        <p class="muted small">Box: drag. Polygon: click points, double-click to close. Click a shape to select it, Delete to remove.</p>
+      </div>
+      <ul id="list" class="list"></ul>
+      <div id="feedback"></div>
+      <button type="button" id="submit">Submit for review</button>
+    {% else %}
+      <h2>Review task #{{ task.pk }}</h2>
+      <p>Reader: <strong>{{ task.annotator.username }}</strong> · status <strong id="status">{{ task.status }}</strong></p>
+      <ul id="list" class="list"></ul>
+      <label>Comment (required to reject)<textarea id="comment" rows="3"></textarea></label>
+      <div class="row">
+        <button type="button" id="approve">Approve</button>
+        <button type="button" id="reject" class="secondary">Reject</button>
+      </div>
+      {% if others %}
+        <h3>Agreement with another reading</h3>
+        <select id="other">
+          {% for o in others %}<option value="{{ o.pk }}">#{{ o.pk }} · {{ o.annotator.username }} ({{ o.status }})</option>{% endfor %}
+        </select>
+        <button type="button" id="compare" class="secondary">Compare</button>
+        <div id="agreement"></div>
+      {% endif %}
+    {% endif %}
+    <p id="message" class="message"></p>
+  </aside>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'review/app.js' %}"></script>{% endblock %}

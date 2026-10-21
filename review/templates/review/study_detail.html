@@ -1,0 +1,27 @@
+{% extends "review/base.html" %}
+{% load static %}
+{% block content %}
+<h1>{{ study.title }}</h1>
+<p class="muted">{{ study.get_modality_display }} · subject <code>{{ study.subject_ref }}</code></p>
+
+<form id="upload" class="upload" data-study="{{ study.pk }}">
+  <label>Add image (DICOM, PNG, JPEG, TIFF) <input type="file" name="file" required></label>
+  <button type="submit">Upload</button>
+  <span id="upload-status" class="muted"></span>
+</form>
+
+<div class="grid">
+{% for img in images %}
+  <figure>
+    <img src="{{ img.file.url }}" alt="Image {{ img.pk }}">
+    <figcaption>
+      #{{ img.pk }} · {{ img.source_format|upper }} · {{ img.width }}×{{ img.height }}
+      {% if is_annotator %}<br><a href="{% url 'annotate' img.pk %}">Annotate</a>{% endif %}
+    </figcaption>
+  </figure>
+{% empty %}
+  <p>No images in this study yet.</p>
+{% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'review/app.js' %}"></script>{% endblock %}
