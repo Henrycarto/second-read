@@ -11,3 +11,6 @@ staticfiles/
 .DS_Store
 .idea/
 .vscode/
+
+# Private interview notes
+INTERVIEW_NOTES.md
